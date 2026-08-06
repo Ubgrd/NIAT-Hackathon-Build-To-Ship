@@ -7,15 +7,19 @@ const BASE_DOT_SIZES = [5, 10, 16, 26];
 const TOP_DOT_SIZES = BASE_DOT_SIZES.map((size) => size * SCALE_FACTOR); // [1.75, 3.5, 5.6, 9.1]
 const BOTTOM_DOT_SIZES = [...TOP_DOT_SIZES].reverse(); // [9.1, 5.6, 3.5, 1.75]
 
-export default function LandingView({ onLogin }) {
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+export default function LandingView() {
   const [email, setEmail] = useState('lead.architect@enterprise.dev');
   const [password, setPassword] = useState('••••••••••••••••');
 
+  const handleGitHubLogin = () => {
+    window.location.href = `${API_BASE}/auth/github`;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onLogin) {
-      onLogin();
-    }
+    handleGitHubLogin();
   };
 
   return (
@@ -169,7 +173,7 @@ export default function LandingView({ onLogin }) {
           {/* Continue with GitHub Outline Button */}
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={handleGitHubLogin}
             className="w-full py-3 px-4 rounded-lg bg-white hover:bg-zinc-50 text-zinc-950 font-bold font-outfit text-xs tracking-wide transition-all border border-zinc-300 hover:border-zinc-400 shadow-[0_4px_14px_rgba(0,0,0,0.08)] flex items-center justify-center gap-2.5 cursor-pointer active:translate-y-[0.5px]"
           >
             {/* Inline GitHub Octicon SVG */}

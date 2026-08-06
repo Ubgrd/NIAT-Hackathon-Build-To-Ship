@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiFetch from '../utils/apiFetch';
 import {
   Layout, Server, ShieldCheck, Cpu, Database, Zap,
   Layers, ArrowRight, Check, Loader2, X, Terminal,
@@ -75,13 +75,11 @@ export default function ArchitectView({
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      // 1. Pointing to the correct /api/architect endpoint
-      const response = await axios.post('http://localhost:5000/api/architect', {
-        prompt: requirements
+      const response = await apiFetch('/api/architect', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: requirements })
       });
-
-      // 2. The backend sends { success: true, data: { ... } }, so we need response.data.data
-      setArchData(response.data.data);
+      setArchData(response.data || response);
       setIsGenerating(false);
     } catch (error) {
       console.error("API Error:", error);

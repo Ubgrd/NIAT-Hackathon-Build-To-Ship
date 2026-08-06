@@ -1,10 +1,22 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { Layers, Cpu, Command, Download, LogOut, Sun, Moon } from 'lucide-react';
+=======
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Layers, Cpu, Command, Download, LogOut, History, Bookmark } from 'lucide-react';
+>>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
 import { mockArchitectData, mockBrainData } from './mockData';
 import ArchitectView from './components/ArchitectView';
 import BrainView from './components/BrainView';
-import LandingView from './components/LandingView';
+import LoginPage from './pages/LoginPage';
+import AuthSuccess from './pages/AuthSuccess';
+import HistoryPage from './pages/HistoryPage';
+import SavedArchitecturesPage from './pages/SavedArchitecturesPage';
+import PrivateRoute from './components/PrivateRoute';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
+<<<<<<< HEAD
 const presetTexts = {
   'Low traffic - 10 - 100 people': "Lightweight single-instance application optimized for minimal operational cost, standard monolithic architecture, single PostgreSQL database instance, and basic caching.",
   'Generic traffic - 100-1000 people': "Balanced microservice architecture with read-replica database scaling, Redis caching layer, load balancer auto-scaling, and background job queue processing.",
@@ -29,6 +41,12 @@ export default function App() {
   if (!isAuthenticated) {
     return <LandingView onLogin={() => setIsAuthenticated(true)} />;
   }
+=======
+function Dashboard() {
+  const [activeMode, setActiveMode] = useState('architect');
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+>>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
 
   return (
     <div className={`min-h-screen w-full ${isDarkMode ? 'dark' : ''}`}>
@@ -72,6 +90,7 @@ export default function App() {
             </button>
           </div>
 
+<<<<<<< HEAD
           {/* Right: Actions */}
           <div className="flex items-center gap-3">
             {/* Dark Mode Toggle */}
@@ -97,6 +116,48 @@ export default function App() {
             </button>
           </div>
         </header>
+=======
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3">
+          {/* History Link */}
+          <button
+            onClick={() => navigate('/history')}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
+          >
+            <History className="w-4 h-4" />
+            <span>History</span>
+          </button>
+
+          {/* Saved Architectures Link */}
+          <button
+            onClick={() => navigate('/saved')}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
+          >
+            <Bookmark className="w-4 h-4" />
+            <span>Saved</span>
+          </button>
+
+          {/* User Avatar */}
+          {user?.avatar_url && (
+            <img
+              src={user.avatar_url}
+              alt={user.login || 'User'}
+              className="w-8 h-8 rounded-full border border-zinc-700"
+              title={user.name || user.login}
+            />
+          )}
+
+          {/* Sign Out */}
+          <button
+            onClick={logout}
+            title="Sign Out of Workspace"
+            className="flex items-center gap-1.5 p-2 rounded-lg border border-white/10 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 text-xs font-bold transition-colors cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+>>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
 
         {/* Main Body Viewport */}
         <main className="flex-1 w-full overflow-hidden relative bg-black">
@@ -126,5 +187,47 @@ export default function App() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
+
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/history"
+            element={
+              <PrivateRoute>
+                <HistoryPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/saved"
+            element={
+              <PrivateRoute>
+                <SavedArchitecturesPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

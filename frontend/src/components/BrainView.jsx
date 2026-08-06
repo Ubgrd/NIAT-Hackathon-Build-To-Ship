@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiFetch from '../utils/apiFetch';
 import {
   Activity, GitCommit, Ticket, Terminal, AlertCircle, CheckCircle,
   MessageSquare, ArrowRight, FileCode, Loader2
@@ -33,8 +33,9 @@ export default function BrainView({ data = mockBrainData }) {
     setIsAnalyzing(true);
     setDiagnosisData(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/ops-brain', {
-        query: "Analyze this stack trace: " + logText
+      const response = await apiFetch('/api/ops-brain', {
+        method: 'POST',
+        body: JSON.stringify({ query: "Analyze this stack trace: " + logText })
       });
 
       setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
@@ -44,33 +45,32 @@ export default function BrainView({ data = mockBrainData }) {
         ...prev,
         {
           sender: 'ai',
-          text: response.data.answer
+          text: response.answer
         }
       ]);
     } catch (error) {
       console.error(error);
-      setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
       setIsAnalyzing(false);
-      setChatMessages((prev) => [...prev, { sender: 'ai', text: `Offline RAG Fallback Activated: Connection failed.` }]);
     }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-    const userText = chatInput;
+
+    const userMsg = chatInput;
+    setChatMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
     setChatInput('');
 
-    setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
-
     try {
-      const response = await axios.post('http://localhost:5000/api/ops-brain', {
-        query: userText
+      const response = await apiFetch('/api/ops-brain', {
+        method: 'POST',
+        body: JSON.stringify({ query: userMsg })
       });
 
       setChatMessages((prev) => [
         ...prev,
-        { sender: 'ai', text: response.data.answer }
+        { sender: 'ai', text: response.answer }
       ]);
     } catch (error) {
       setChatMessages((prev) => [...prev, { sender: 'ai', text: `Error reaching the Institutional Brain.` }]);
