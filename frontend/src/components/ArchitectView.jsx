@@ -17,16 +17,16 @@ const iconMap = {
 };
 
 const presetTexts = {
-  'Esports Platform': "Real-time competitive tournament gaming platform requiring ultra-low latency matchmaking, WebSocket live streaming leaderboards, JWT authentication, and resilient state handling for 100,000+ concurrent players.",
-  'Fintech Payments': "High-frequency payment processing engine with immutable audit logs, strict ACID compliance, fraud detection microservices, tokenized PCI-DSS storage, and zero-downtime redundant database topology.",
-  'Healthcare EHR': "HIPAA-compliant electronic health records management platform with role-based end-to-end encryption, multi-tenant doctor-patient communication channels, and secure biometric document storage pipelines."
+  'Low traffic - 10 - 100 people': "Lightweight single-instance application optimized for minimal operational cost, standard monolithic architecture, single PostgreSQL database instance, and basic caching.",
+  'Generic traffic - 100-1000 people': "Balanced microservice architecture with read-replica database scaling, Redis caching layer, load balancer auto-scaling, and background job queue processing.",
+  'High traffic - 1000- 10k+ people': "High-throughput enterprise distributed architecture with multi-region database sharding, WebSocket event streaming, CDN edge caching, and zero-downtime microservice orchestration."
 };
 
 const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
 
 export default function ArchitectView({ data = mockArchitectData }) {
-  const [activePreset, setActivePreset] = useState('Esports Platform');
-  const [requirements, setRequirements] = useState(presetTexts['Esports Platform']);
+  const [activePreset, setActivePreset] = useState('Low traffic - 10 - 100 people');
+  const [requirements, setRequirements] = useState(presetTexts['Low traffic - 10 - 100 people']);
   const [dbPreference] = useState('SQL - PostgreSQL');
 
   const [isGenerating, setIsGenerating] = useState(false);
@@ -138,7 +138,7 @@ export default function ArchitectView({ data = mockArchitectData }) {
           {/* Presets Row */}
           <div>
             <label className="block text-xs font-bold text-zinc-500 tracking-wider uppercase mb-2 font-tech">
-              DOMAIN PRESETS
+              TRAFFIC PRESETS
             </label>
             <div className="flex flex-wrap gap-2">
               {Object.keys(presetTexts).map((preset) => {
