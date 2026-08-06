@@ -76,7 +76,7 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 // 1. Redirect user to GitHub Login
 app.get('/auth/github', (req, res) => {
     const redirectUri = `${SERVER_URL}/auth/github/callback`;
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`;
     res.redirect(githubAuthUrl);
 });
 
