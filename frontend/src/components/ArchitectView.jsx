@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import apiFetch from '../utils/apiFetch';
 import {
   Layout, Server, ShieldCheck, Cpu, Database, Zap,
   Layers, ArrowRight, Check, Loader2, X, Terminal,
@@ -23,8 +23,6 @@ const presetTexts = {
 };
 
 const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function ArchitectView({ data = mockArchitectData }) {
   const [activePreset, setActivePreset] = useState('Low traffic - 10 - 100 people');
@@ -57,13 +55,11 @@ export default function ArchitectView({ data = mockArchitectData }) {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      // 1. Pointing to the correct /api/architect endpoint
-      const response = await axios.post(`${API_BASE_URL}/api/architect`, {
-        prompt: requirements
+      const response = await apiFetch('/api/architect', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: requirements })
       });
-
-      // 2. The backend sends { success: true, data: { ... } }, so we need response.data.data
-      setArchData(response.data.data);
+      setArchData(response.data || response);
       setIsGenerating(false);
     } catch (error) {
       console.error("API Error:", error);

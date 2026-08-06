@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apiFetch from '../utils/apiFetch';
 import {
   Activity, GitCommit, Ticket, Terminal, AlertCircle, CheckCircle,
   MessageSquare, ArrowRight, FileCode, Loader2
@@ -13,8 +13,6 @@ const sampleStackTrace = `[ERROR] 2026-08-06T00:15:22.412Z - PoolExhaustedError:
 [WARN] 2026-08-06T00:15:23.001Z - WebSocket connection dropped for 4,120 subscribers in lobby_id=eu_west_prime due to upstream latency.`;
 
 const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function BrainView({ data = mockBrainData }) {
   const { recentCommits, jiraTickets, sampleDiagnosis } = data;
@@ -35,8 +33,9 @@ export default function BrainView({ data = mockBrainData }) {
     setIsAnalyzing(true);
     setDiagnosisData(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/ops-brain`, {
-        query: "Analyze this stack trace: " + logText
+      const response = await apiFetch('/api/ops-brain', {
+        method: 'POST',
+        body: JSON.stringify({ query: "Analyze this stack trace: " + logText })
       });
 
       setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
@@ -46,7 +45,7 @@ export default function BrainView({ data = mockBrainData }) {
         ...prev,
         {
           sender: 'ai',
-          text: response.data.answer
+          text: response.answer
         }
       ]);
     } catch (error) {
@@ -64,13 +63,14 @@ export default function BrainView({ data = mockBrainData }) {
     setChatInput('');
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/ops-brain`, {
-        query: userMsg
+      const response = await apiFetch('/api/ops-brain', {
+        method: 'POST',
+        body: JSON.stringify({ query: userMsg })
       });
 
       setChatMessages((prev) => [
         ...prev,
-        { sender: 'ai', text: response.data.answer }
+        { sender: 'ai', text: response.answer }
       ]);
     } catch (error) {
       setChatMessages((prev) => [...prev, { sender: 'ai', text: `Error reaching the Institutional Brain.` }]);
