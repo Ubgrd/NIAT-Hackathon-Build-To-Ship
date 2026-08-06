@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
-import { Layers, Cpu, Command, Download, LogOut, Sun, Moon } from 'lucide-react';
-=======
-import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { Layers, Cpu, Command, Download, LogOut, History, Bookmark } from 'lucide-react';
->>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
+import { Layers, Cpu, Command, Download, LogOut, Sun, Moon, History, Bookmark } from 'lucide-react';
 import { mockArchitectData, mockBrainData } from './mockData';
 import ArchitectView from './components/ArchitectView';
 import BrainView from './components/BrainView';
@@ -16,17 +11,17 @@ import SavedArchitecturesPage from './pages/SavedArchitecturesPage';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
-<<<<<<< HEAD
 const presetTexts = {
   'Low traffic - 10 - 100 people': "Lightweight single-instance application optimized for minimal operational cost, standard monolithic architecture, single PostgreSQL database instance, and basic caching.",
   'Generic traffic - 100-1000 people': "Balanced microservice architecture with read-replica database scaling, Redis caching layer, load balancer auto-scaling, and background job queue processing.",
   'High traffic - 1000- 10k+ people': "High-throughput enterprise distributed architecture with multi-region database sharding, WebSocket event streaming, CDN edge caching, and zero-downtime microservice orchestration."
 };
 
-export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+function Dashboard() {
   const [activeMode, setActiveMode] = useState('architect');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   // Lifted ArchitectView state
   const [activePreset, setActivePreset] = useState('Low traffic - 10 - 100 people');
@@ -37,16 +32,6 @@ export default function App() {
   const [archData, setArchData] = useState(null);
   const [activeTab, setActiveTab] = useState('Architecture Canvas');
   const [schemaToggle, setSchemaToggle] = useState('SQL (PostgreSQL)');
-
-  if (!isAuthenticated) {
-    return <LandingView onLogin={() => setIsAuthenticated(true)} />;
-  }
-=======
-function Dashboard() {
-  const [activeMode, setActiveMode] = useState('architect');
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
->>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
 
   return (
     <div className={`min-h-screen w-full ${isDarkMode ? 'dark' : ''}`}>
@@ -90,7 +75,6 @@ function Dashboard() {
             </button>
           </div>
 
-<<<<<<< HEAD
           {/* Right: Actions */}
           <div className="flex items-center gap-3">
             {/* Dark Mode Toggle */}
@@ -107,57 +91,45 @@ function Dashboard() {
               <Download className="w-4 h-4" />
               <span>Export Blueprint</span>
             </button>
+
+            {/* History Link */}
             <button
-              onClick={() => setIsAuthenticated(false)}
-              title="Sign Out of Institutional Workspace"
+              onClick={() => navigate('/history')}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
+            >
+              <History className="w-4 h-4" />
+              <span>History</span>
+            </button>
+
+            {/* Saved Architectures Link */}
+            <button
+              onClick={() => navigate('/saved')}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
+            >
+              <Bookmark className="w-4 h-4" />
+              <span>Saved</span>
+            </button>
+
+            {/* User Avatar */}
+            {user?.avatar_url && (
+              <img
+                src={user.avatar_url}
+                alt={user.login || 'User'}
+                className="w-8 h-8 rounded-full border border-zinc-700"
+                title={user.name || user.login}
+              />
+            )}
+
+            {/* Sign Out */}
+            <button
+              onClick={logout}
+              title="Sign Out of Workspace"
               className="flex items-center gap-1.5 p-2 rounded-lg border border-white/10 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 text-xs font-bold transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>
           </div>
         </header>
-=======
-        {/* Right: Actions */}
-        <div className="flex items-center gap-3">
-          {/* History Link */}
-          <button
-            onClick={() => navigate('/history')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
-          >
-            <History className="w-4 h-4" />
-            <span>History</span>
-          </button>
-
-          {/* Saved Architectures Link */}
-          <button
-            onClick={() => navigate('/saved')}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer"
-          >
-            <Bookmark className="w-4 h-4" />
-            <span>Saved</span>
-          </button>
-
-          {/* User Avatar */}
-          {user?.avatar_url && (
-            <img
-              src={user.avatar_url}
-              alt={user.login || 'User'}
-              className="w-8 h-8 rounded-full border border-zinc-700"
-              title={user.name || user.login}
-            />
-          )}
-
-          {/* Sign Out */}
-          <button
-            onClick={logout}
-            title="Sign Out of Workspace"
-            className="flex items-center gap-1.5 p-2 rounded-lg border border-white/10 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 text-xs font-bold transition-colors cursor-pointer"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-      </header>
->>>>>>> 0fef8fc9e0b6837484ce2a719f4658206deb059c
 
         {/* Main Body Viewport */}
         <main className="flex-1 w-full overflow-hidden relative bg-black">

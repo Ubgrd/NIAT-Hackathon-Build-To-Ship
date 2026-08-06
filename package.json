@@ -19,5 +19,8 @@
     "url": "https://github.com/Ubgrd/NIAT-Hackathon-Build-To-Ship/issues"
   },
   "homepage": "https://github.com/Ubgrd/NIAT-Hackathon-Build-To-Ship#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "react-router-dom": "^7.18.2"
+  }
 }
