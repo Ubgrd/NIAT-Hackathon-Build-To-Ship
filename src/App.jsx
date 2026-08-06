@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
-import { Layers, Cpu, Command, Download } from 'lucide-react';
+import { Layers, Cpu, Command, Download, LogOut } from 'lucide-react';
 import { mockArchitectData, mockBrainData } from './mockData';
 import ArchitectView from './components/ArchitectView';
 import BrainView from './components/BrainView';
+import LandingView from './components/LandingView';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeMode, setActiveMode] = useState('architect');
+
+  if (!isAuthenticated) {
+    return <LandingView onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-black text-zinc-100 font-outfit font-medium antialiased selection:bg-zinc-700">
@@ -48,11 +54,18 @@ export default function App() {
           </button>
         </div>
 
-        {/* Right: Export Button */}
-        <div className="flex items-center">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-3">
           <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer">
             <Download className="w-4 h-4" />
             <span>Export Blueprint</span>
+          </button>
+          <button
+            onClick={() => setIsAuthenticated(false)}
+            title="Sign Out of Institutional Workspace"
+            className="flex items-center gap-1.5 p-2 rounded-lg border border-white/10 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-100 text-xs font-bold transition-colors cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </header>
