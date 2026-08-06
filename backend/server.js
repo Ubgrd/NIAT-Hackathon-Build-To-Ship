@@ -69,17 +69,20 @@ app.get('/api/health', (req, res) => {
 // GITHUB OAUTH ROUTES
 // ============================================================
 
+// Define our URLs based on the environment (Vercel vs Local)
+const SERVER_URL = process.env.SERVER_URL || 'http://localhost:5000';
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+
 // 1. Redirect user to GitHub Login
 app.get('/auth/github', (req, res) => {
-    const redirectUri = process.env.REDIRECT_URI || 'http://localhost:5000/auth/github/callback';
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=user:email`;
+    const redirectUri = `${SERVER_URL}/auth/github/callback`;
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${redirectUri}&scope=user:email`;
     res.redirect(githubAuthUrl);
 });
 
 // 2. Handle GitHub Callback (GitHub redirects here with a code)
 app.get('/auth/github/callback', async (req, res) => {
     const { code } = req.query;
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 
     if (!code) return res.status(400).send('No code provided by GitHub');
 
@@ -149,11 +152,11 @@ app.get('/auth/github/callback', async (req, res) => {
         const jwtSecret = process.env.JWT_SECRET || process.env.SUPABASE_JWT_SECRET || 'fallback_secret_for_local_dev';
         const token = jwt.sign(userRecord, jwtSecret, { expiresIn: '7d' });
 
-        // Redirect back to the frontend /auth/success route with token
-        res.redirect(`${frontendUrl}/auth/success?token=${token}`);
+        // Redirect back to the correct Frontend URL!
+        res.redirect(`${CLIENT_URL}/auth/success?token=${token}`);
     } catch (error) {
         console.error('Auth Error:', error.response?.data || error.message);
-        res.redirect(`${frontendUrl}/login?error=auth_failed`);
+        res.redirect(`${CLIENT_URL}/login?error=auth_failed`);
     }
 });
 
