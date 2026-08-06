@@ -24,6 +24,8 @@ const presetTexts = {
 
 const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function ArchitectView({ data = mockArchitectData }) {
   const [activePreset, setActivePreset] = useState('Low traffic - 10 - 100 people');
   const [requirements, setRequirements] = useState(presetTexts['Low traffic - 10 - 100 people']);
@@ -56,7 +58,7 @@ export default function ArchitectView({ data = mockArchitectData }) {
     setIsGenerating(true);
     try {
       // 1. Pointing to the correct /api/architect endpoint
-      const response = await axios.post('http://localhost:5000/api/architect', {
+      const response = await axios.post(`${API_BASE_URL}/api/architect`, {
         prompt: requirements
       });
 

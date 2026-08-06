@@ -14,6 +14,8 @@ const sampleStackTrace = `[ERROR] 2026-08-06T00:15:22.412Z - PoolExhaustedError:
 
 const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function BrainView({ data = mockBrainData }) {
   const { recentCommits, jiraTickets, sampleDiagnosis } = data;
 
@@ -33,7 +35,7 @@ export default function BrainView({ data = mockBrainData }) {
     setIsAnalyzing(true);
     setDiagnosisData(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/ops-brain', {
+      const response = await axios.post(`${API_BASE_URL}/api/ops-brain`, {
         query: "Analyze this stack trace: " + logText
       });
 
@@ -49,23 +51,21 @@ export default function BrainView({ data = mockBrainData }) {
       ]);
     } catch (error) {
       console.error(error);
-      setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
       setIsAnalyzing(false);
-      setChatMessages((prev) => [...prev, { sender: 'ai', text: `Offline RAG Fallback Activated: Connection failed.` }]);
     }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
-    const userText = chatInput;
+
+    const userMsg = chatInput;
+    setChatMessages((prev) => [...prev, { sender: 'user', text: userMsg }]);
     setChatInput('');
 
-    setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
-
     try {
-      const response = await axios.post('http://localhost:5000/api/ops-brain', {
-        query: userText
+      const response = await axios.post(`${API_BASE_URL}/api/ops-brain`, {
+        query: userMsg
       });
 
       setChatMessages((prev) => [
