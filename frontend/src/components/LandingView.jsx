@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Command, ArrowRight, Lock, Terminal, Sparkles, ChevronDown } from 'lucide-react';
 
 const TOTAL_COLS = 48;
-const TOP_DOT_SIZES = [5, 10, 16, 26]; // Smallest at the top, largest nearest to the seam
-const BOTTOM_DOT_SIZES = [26, 16, 10, 5]; // Largest nearest to the seam, smallest at the bottom
+const SCALE_FACTOR = 0.35; // ~65% reduction for fine precision grid
+const BASE_DOT_SIZES = [5, 10, 16, 26];
+const TOP_DOT_SIZES = BASE_DOT_SIZES.map((size) => size * SCALE_FACTOR); // [1.75, 3.5, 5.6, 9.1]
+const BOTTOM_DOT_SIZES = [...TOP_DOT_SIZES].reverse(); // [9.1, 5.6, 3.5, 1.75]
 
 export default function LandingView({ onLogin }) {
   const [email, setEmail] = useState('lead.architect@enterprise.dev');
@@ -18,6 +20,18 @@ export default function LandingView({ onLogin }) {
 
   return (
     <div className="flex flex-col min-h-screen w-full overflow-y-auto antialiased font-outfit selection:bg-zinc-700 text-white">
+      <style>{`
+        @keyframes breathe {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(0.4);
+            opacity: 0.2;
+          }
+        }
+      `}</style>
       {/* Top Section (The Dark Hero Pitch) */}
       <section className="w-full min-h-[85vh] bg-black flex flex-col items-center justify-center text-center px-6 py-20 relative overflow-hidden">
         <div className="max-w-3xl w-full space-y-8 z-10 my-auto">
@@ -99,6 +113,10 @@ export default function LandingView({ onLogin }) {
                       width: `${size * scale}px`,
                       height: `${size * scale}px`,
                       opacity: dotIdx === 0 ? 0.5 : dotIdx === 1 ? 0.75 : 1,
+                      animation: 'breathe 4s ease-in-out infinite',
+                      animationDelay: `${(index % 10) * 0.4}s`,
+                      transformOrigin: 'center',
+                      willChange: 'transform, opacity',
                     }}
                   />
                 ))}
@@ -125,6 +143,10 @@ export default function LandingView({ onLogin }) {
                       width: `${size * scale}px`,
                       height: `${size * scale}px`,
                       opacity: dotIdx === 3 ? 0.5 : dotIdx === 2 ? 0.75 : 1,
+                      animation: 'breathe 4s ease-in-out infinite',
+                      animationDelay: `${(index % 10) * 0.4}s`,
+                      transformOrigin: 'center',
+                      willChange: 'transform, opacity',
                     }}
                   />
                 ))}
@@ -215,9 +237,17 @@ export default function LandingView({ onLogin }) {
           </form>
 
           {/* Footer Security Badge */}
-          <div className="mt-8 pt-6 border-t border-zinc-200/80 text-center flex items-center justify-center gap-2 text-xs font-tech font-bold text-zinc-500">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>256-BIT TLS ENCRYPTED RAG TELEMETRY</span>
+          <div className="mt-8 pt-6 border-t border-zinc-200/80">
+            <div className="flex flex-col items-center gap-1.5 mt-6">
+              <div className="flex items-center gap-2 text-xs font-tech font-bold text-zinc-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>256-BIT TLS ENCRYPTED RAG TELEMETRY</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs font-tech font-bold text-zinc-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>END TO END ENCRYPTED WITH PASSWORD HASHING</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -5,26 +5,10 @@ import ArchitectView from './components/ArchitectView';
 import BrainView from './components/BrainView';
 import LandingView from './components/LandingView';
 
-const presetTexts = {
-  'Low traffic - 10 - 100 people': "Lightweight single-instance application optimized for minimal operational cost, standard monolithic architecture, single PostgreSQL database instance, and basic caching.",
-  'Generic traffic - 100-1000 people': "Balanced microservice architecture with read-replica database scaling, Redis caching layer, load balancer auto-scaling, and background job queue processing.",
-  'High traffic - 1000- 10k+ people': "High-throughput enterprise distributed architecture with multi-region database sharding, WebSocket event streaming, CDN edge caching, and zero-downtime microservice orchestration."
-};
-
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeMode, setActiveMode] = useState('architect');
   const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Lifted ArchitectView state
-  const [activePreset, setActivePreset] = useState('Low traffic - 10 - 100 people');
-  const [requirements, setRequirements] = useState(presetTexts['Low traffic - 10 - 100 people']);
-  const [showGithubInput, setShowGithubInput] = useState(false);
-  const [githubUrl, setGithubUrl] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [archData, setArchData] = useState(null);
-  const [activeTab, setActiveTab] = useState('Architecture Canvas');
-  const [schemaToggle, setSchemaToggle] = useState('SQL (PostgreSQL)');
 
   if (!isAuthenticated) {
     return <LandingView onLogin={() => setIsAuthenticated(true)} />;
@@ -49,11 +33,10 @@ export default function App() {
           <div className="flex items-center bg-zinc-900 p-1.5 rounded-lg border border-zinc-800">
             <button
               onClick={() => setActiveMode('architect')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs transition-all duration-150 cursor-pointer ${
-                activeMode === 'architect'
-                  ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-white font-bold shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
-                  : 'text-zinc-400 hover:text-zinc-100 font-medium'
-              }`}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs transition-all duration-150 cursor-pointer ${activeMode === 'architect'
+                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-white font-bold shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
+                : 'text-zinc-400 hover:text-zinc-100 font-medium'
+                }`}
             >
               <Layers className="w-4 h-4" />
               <span>Architect Mode (System Design)</span>
@@ -61,11 +44,10 @@ export default function App() {
 
             <button
               onClick={() => setActiveMode('brain')}
-              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs transition-all duration-150 cursor-pointer ${
-                activeMode === 'brain'
-                  ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-white font-bold shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
-                  : 'text-zinc-400 hover:text-zinc-100 font-medium'
-              }`}
+              className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs transition-all duration-150 cursor-pointer ${activeMode === 'brain'
+                ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-950 dark:text-white font-bold shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
+                : 'text-zinc-400 hover:text-zinc-100 font-medium'
+                }`}
             >
               <Cpu className="w-4 h-4" />
               <span>Institutional Brain (DevOps Triage)</span>
@@ -83,7 +65,7 @@ export default function App() {
               <Moon className="w-3 h-3 text-zinc-400 absolute right-1.5" />
               <div className={`w-4 h-4 rounded-full bg-white shadow-sm absolute transition-transform duration-300 z-10 ${isDarkMode ? 'translate-x-6' : 'translate-x-0'}`} />
             </button>
-            
+
             <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-white/20 bg-black text-zinc-100 hover:bg-white/10 text-xs font-bold shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-colors duration-150 active:translate-y-[0.5px] cursor-pointer">
               <Download className="w-4 h-4" />
               <span>Export Blueprint</span>
@@ -101,25 +83,7 @@ export default function App() {
         {/* Main Body Viewport */}
         <main className="flex-1 w-full overflow-hidden relative bg-black">
           {activeMode === 'architect' ? (
-            <ArchitectView
-              data={mockArchitectData}
-              activePreset={activePreset}
-              setActivePreset={setActivePreset}
-              requirements={requirements}
-              setRequirements={setRequirements}
-              showGithubInput={showGithubInput}
-              setShowGithubInput={setShowGithubInput}
-              githubUrl={githubUrl}
-              setGithubUrl={setGithubUrl}
-              isGenerating={isGenerating}
-              setIsGenerating={setIsGenerating}
-              archData={archData}
-              setArchData={setArchData}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              schemaToggle={schemaToggle}
-              setSchemaToggle={setSchemaToggle}
-            />
+            <ArchitectView data={mockArchitectData} />
           ) : (
             <BrainView data={mockBrainData} />
           )}

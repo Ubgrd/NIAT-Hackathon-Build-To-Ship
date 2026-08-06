@@ -1,0 +1,23 @@
+{
+  "name": "dev-assist-ai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "node backend/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ubgrd/NIAT-Hackathon-Build-To-Ship.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ubgrd/NIAT-Hackathon-Build-To-Ship/issues"
+  },
+  "homepage": "https://github.com/Ubgrd/NIAT-Hackathon-Build-To-Ship#readme",
+  "description": ""
+}

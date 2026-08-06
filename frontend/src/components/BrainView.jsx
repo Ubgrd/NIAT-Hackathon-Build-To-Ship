@@ -78,28 +78,28 @@ export default function BrainView({ data = mockBrainData }) {
   };
 
   return (
-    <div className="h-full w-full bg-black text-zinc-950 font-outfit font-medium flex flex-col lg:flex-row p-4 lg:p-6 gap-6 overflow-hidden relative">
-      {/* Floating Left Context Sidebar (30% width) - bg-zinc-100 rounded-xl with hidden scrollbar */}
-      <aside className={`w-full lg:w-[30%] bg-zinc-100 rounded-xl p-5 lg:p-6 border border-white/10 shadow-xl flex flex-col justify-between overflow-y-auto ${hideScrollbar} flex-shrink-0 z-10`}>
+    <div className="h-full w-full bg-black text-zinc-950 dark:text-white font-outfit font-medium flex flex-col lg:flex-row p-4 lg:p-6 gap-6 overflow-hidden relative">
+      {/* Floating Left Context Sidebar (30% width) - bg-zinc-100 dark:bg-zinc-900 rounded-xl with hidden scrollbar */}
+      <aside className={`w-full lg:w-[30%] bg-zinc-100 dark:bg-zinc-900 rounded-xl p-5 lg:p-6 border border-white/10 shadow-xl flex flex-col justify-between overflow-y-auto ${hideScrollbar} flex-shrink-0 z-10`}>
         <div className="space-y-6">
           {/* Header */}
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 tracking-wider uppercase mb-1.5 font-tech">
-              <Terminal className="w-4 h-4 text-zinc-950" />
+            <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase mb-1.5 font-tech">
+              <Terminal className="w-4 h-4 text-zinc-950 dark:text-white" />
               <span>DEVOPS TRIAGE TELEMETRY</span>
             </div>
-            <h2 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+            <h2 className="text-lg font-bold text-zinc-950 dark:text-white tracking-tight font-outfit">
               System Context Feed
             </h2>
-            <p className="text-xs text-zinc-500 font-medium mt-1 leading-relaxed font-outfit">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium mt-1 leading-relaxed font-outfit">
               Live streaming ingestion of source repository mutations and production incident tickets.
             </p>
           </div>
 
-          {/* 'System Health' Widget - pure bg-white with custom shadow-[0_4px_14px_rgba(0,0,0,0.15)] */}
-          <div className="bg-white border border-zinc-300 rounded-lg p-4.5 shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
+          {/* 'System Health' Widget - pure bg-white dark:bg-zinc-800 with custom shadow-[0_4px_14px_rgba(0,0,0,0.15)] */}
+          <div className="bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg p-4.5 shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase font-tech">
+              <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase font-tech">
                 SYSTEM HEALTH & TELEMETRY
               </span>
               <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-black text-white font-bold border border-black font-tech text-xs shadow-sm">
@@ -107,20 +107,20 @@ export default function BrainView({ data = mockBrainData }) {
                 <span>99.9% Uptime</span>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-zinc-950 bg-zinc-100 px-3.5 py-2.5 rounded-lg border border-zinc-300 mt-2 font-tech font-bold shadow-sm">
-              <CheckCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-zinc-950 dark:text-white bg-zinc-100 dark:bg-zinc-900 px-3.5 py-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 mt-2 font-tech font-bold shadow-sm">
+              <CheckCircle className="w-4 h-4 text-zinc-950 dark:text-white flex-shrink-0" />
               <span className="truncate">Active Log Ingestion: <span className="bg-black text-white font-bold px-2 py-0.5 rounded-md border border-black ml-1 font-tech">Operational</span></span>
             </div>
           </div>
 
           {/* 'Recent Commits' List */}
-          <div className="space-y-3 pt-4 border-t border-zinc-300">
+          <div className="space-y-3 pt-4 border-t border-zinc-300 dark:border-zinc-700">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase flex items-center gap-1.5 font-tech">
-                <GitCommit className="w-4 h-4 text-zinc-950" />
+              <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase flex items-center gap-1.5 font-tech">
+                <GitCommit className="w-4 h-4 text-zinc-950 dark:text-white" />
                 <span>RECENT COMMITS</span>
               </h3>
-              <span className="text-xs font-tech text-zinc-950 bg-white px-2.5 py-0.5 rounded-md border border-zinc-300 font-bold shadow-sm">
+              <span className="text-xs font-tech text-zinc-950 dark:text-white bg-white dark:bg-zinc-800 px-2.5 py-0.5 rounded-md border border-zinc-300 dark:border-zinc-700 font-bold shadow-sm">
                 Main Branch
               </span>
             </div>
@@ -129,22 +129,22 @@ export default function BrainView({ data = mockBrainData }) {
               {recentCommits.map((commit) => (
                 <div
                   key={commit.id}
-                  className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                  className="bg-white dark:bg-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 border border-zinc-300 dark:border-zinc-700 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                 >
                   <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="font-fira bg-zinc-100 border border-zinc-300 text-zinc-950 px-2.5 py-0.5 rounded-md text-xs font-bold shadow-sm">
+                    <span className="font-fira bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-950 dark:text-white px-2.5 py-0.5 rounded-md text-xs font-bold shadow-sm">
                       {commit.id}
                     </span>
-                    <span className="text-xs text-zinc-500 font-bold font-outfit">
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold font-outfit">
                       {commit.time}
                     </span>
                   </div>
-                  <p className="text-base font-bold text-zinc-950 leading-snug font-outfit">
+                  <p className="text-base font-bold text-zinc-950 dark:text-white leading-snug font-outfit">
                     {commit.message}
                   </p>
-                  <div className="mt-3 text-xs text-zinc-500 font-bold flex items-center justify-between border-t border-zinc-300 pt-2.5 font-outfit">
+                  <div className="mt-3 text-xs text-zinc-500 dark:text-zinc-400 font-bold flex items-center justify-between border-t border-zinc-300 dark:border-zinc-700 pt-2.5 font-outfit">
                     <span>Committer:</span>
-                    <span className="text-zinc-950 font-bold">{commit.author}</span>
+                    <span className="text-zinc-950 dark:text-white font-bold">{commit.author}</span>
                   </div>
                 </div>
               ))}
@@ -152,13 +152,13 @@ export default function BrainView({ data = mockBrainData }) {
           </div>
 
           {/* 'Active Jira Tickets' List */}
-          <div className="space-y-3 pt-4 border-t border-zinc-300">
+          <div className="space-y-3 pt-4 border-t border-zinc-300 dark:border-zinc-700">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase flex items-center gap-1.5 font-tech">
-                <Ticket className="w-4 h-4 text-zinc-950" />
+              <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase flex items-center gap-1.5 font-tech">
+                <Ticket className="w-4 h-4 text-zinc-950 dark:text-white" />
                 <span>ACTIVE JIRA TICKETS</span>
               </h3>
-              <span className="text-xs font-tech text-zinc-950 bg-white px-2.5 py-0.5 rounded-md border border-zinc-300 font-bold shadow-sm">
+              <span className="text-xs font-tech text-zinc-950 dark:text-white bg-white dark:bg-zinc-800 px-2.5 py-0.5 rounded-md border border-zinc-300 dark:border-zinc-700 font-bold shadow-sm">
                 Live Queue
               </span>
             </div>
@@ -168,32 +168,32 @@ export default function BrainView({ data = mockBrainData }) {
                 const getPriorityBadgeClass = (priority) => {
                   if (priority === 'Critical') return 'bg-red-100 text-red-800 border border-red-200 font-bold';
                   if (priority === 'High') return 'bg-orange-100 text-orange-800 border border-orange-200 font-bold';
-                  return 'bg-zinc-100 text-zinc-800 border border-zinc-300 font-bold';
+                  return 'bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700 font-bold';
                 };
 
                 const getStatusTextClass = (status) => {
                   if (status === 'Resolved') return 'text-emerald-600 font-semibold';
                   if (status === 'In Progress') return 'text-blue-600 font-semibold';
-                  return 'text-zinc-500 font-medium';
+                  return 'text-zinc-500 dark:text-zinc-400 font-medium';
                 };
 
                 return (
                   <div
                     key={ticket.key}
-                    className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                    className="bg-white dark:bg-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 border border-zinc-300 dark:border-zinc-700 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                   >
                     <div className="flex items-center justify-between mb-2.5">
-                      <span className="font-fira text-xs font-bold text-zinc-950 bg-zinc-100 px-2.5 py-0.5 rounded-md border border-zinc-300 shadow-sm">
+                      <span className="font-fira text-xs font-bold text-zinc-950 dark:text-white bg-zinc-100 dark:bg-zinc-900 px-2.5 py-0.5 rounded-md border border-zinc-300 dark:border-zinc-700 shadow-sm">
                         {ticket.key}
                       </span>
                       <span className={`text-xs font-tech uppercase px-2 py-0.5 rounded-md shadow-sm ${getPriorityBadgeClass(ticket.priority)}`}>
                         {ticket.priority}
                       </span>
                     </div>
-                    <h4 className="text-base font-bold text-zinc-950 leading-snug font-outfit">
+                    <h4 className="text-base font-bold text-zinc-950 dark:text-white leading-snug font-outfit">
                       {ticket.title}
                     </h4>
-                    <div className="mt-3 flex items-center justify-between text-xs text-zinc-500 font-bold border-t border-zinc-300 pt-2.5 font-outfit">
+                    <div className="mt-3 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 font-bold border-t border-zinc-300 dark:border-zinc-700 pt-2.5 font-outfit">
                       <span>Status:</span>
                       <span className={`font-tech ${getStatusTextClass(ticket.status)}`}>{ticket.status}</span>
                     </div>
@@ -207,14 +207,14 @@ export default function BrainView({ data = mockBrainData }) {
 
       {/* Segmented Right Workspace (70% width) - Transparent wrapper with hidden scrollbar */}
       <section className={`w-full lg:w-[70%] bg-transparent flex flex-col space-y-6 overflow-y-auto ${hideScrollbar}`}>
-        {/* Card 1: Raw Log Input Area rounded-xl bg-zinc-100 */}
-        <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-300 pb-3.5">
-            <div className="flex items-center gap-2.5 font-outfit text-lg font-bold text-zinc-950 tracking-tight">
-              <Terminal className="w-5 h-5 text-zinc-950" />
+        {/* Card 1: Raw Log Input Area rounded-xl bg-zinc-100 dark:bg-zinc-900 */}
+        <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-300 dark:border-zinc-700 pb-3.5">
+            <div className="flex items-center gap-2.5 font-outfit text-lg font-bold text-zinc-950 dark:text-white tracking-tight">
+              <Terminal className="w-5 h-5 text-zinc-950 dark:text-white" />
               <span>Raw Production Log Ingestion & Stack Trace</span>
             </div>
-            <span className="text-xs uppercase font-bold text-zinc-950 tracking-wider font-tech px-3 py-1 rounded-md bg-white border border-zinc-300 self-start sm:self-auto shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
+            <span className="text-xs uppercase font-bold text-zinc-950 dark:text-white tracking-wider font-tech px-3 py-1 rounded-md bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 self-start sm:self-auto shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
               ANOMALY DETECTION
             </span>
           </div>
@@ -230,7 +230,7 @@ export default function BrainView({ data = mockBrainData }) {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 font-outfit">
-            <span className="text-xs text-zinc-500 font-bold flex items-center gap-1.5">
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold flex items-center gap-1.5">
               <span>RAG Engine ready to correlate stack trace against Jira & GitHub history.</span>
             </span>
             <button
@@ -255,12 +255,12 @@ export default function BrainView({ data = mockBrainData }) {
 
         {/* Card 2: Loading State rounded-xl */}
         {isAnalyzing && (
-          <div className="py-14 flex flex-col items-center justify-center bg-zinc-100 rounded-xl border border-white/10 shadow-xl text-center">
-            <Loader2 className="w-9 h-9 animate-spin text-zinc-950 mb-3.5" />
-            <h3 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+          <div className="py-14 flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-white/10 shadow-xl text-center">
+            <Loader2 className="w-9 h-9 animate-spin text-zinc-950 dark:text-white mb-3.5" />
+            <h3 className="text-lg font-bold text-zinc-950 dark:text-white tracking-tight font-outfit">
               Traversing Institutional Graph & Vector Embeddings...
             </h3>
-            <p className="text-xs text-zinc-500 font-bold mt-1.5 font-fira">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 font-bold mt-1.5 font-fira">
               Matching error tokens against Commit a1b2c3d and Ticket DEV-402
             </p>
           </div>
@@ -270,19 +270,19 @@ export default function BrainView({ data = mockBrainData }) {
         {diagnosisData && !isAnalyzing && (
           <>
             {/* Root Cause Banner - Floating Card rounded-xl */}
-            <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 text-zinc-950 shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
+            <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-white/10 text-zinc-950 dark:text-white shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
               <div className="flex items-start gap-4">
-                <AlertCircle className="w-6 h-6 text-zinc-950 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-6 h-6 text-zinc-950 dark:text-white flex-shrink-0 mt-0.5" />
                 <div className="space-y-2 flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+                    <h3 className="text-lg font-bold text-zinc-950 dark:text-white tracking-tight font-outfit">
                       Root Cause Identified
                     </h3>
                     <span className="text-xs font-tech font-bold text-white bg-black px-3 py-1 rounded-md border border-black shadow-sm">
                       Confidence: 99.4%
                     </span>
                   </div>
-                  <p className="text-base text-zinc-950 font-bold leading-relaxed font-outfit">
+                  <p className="text-base text-zinc-950 dark:text-white font-bold leading-relaxed font-outfit">
                     {diagnosisData.rootCause}
                   </p>
                 </div>
@@ -290,8 +290,8 @@ export default function BrainView({ data = mockBrainData }) {
 
               {/* Matched Historical Context */}
               {diagnosisData.matchedSources && (
-                <div className="pt-4 border-t border-zinc-300">
-                  <span className="text-xs font-bold font-tech text-zinc-500 tracking-wider uppercase block mb-3">
+                <div className="pt-4 border-t border-zinc-300 dark:border-zinc-700">
+                  <span className="text-xs font-bold font-tech text-zinc-500 dark:text-zinc-400 tracking-wider uppercase block mb-3">
                     MATCHED INSTITUTIONAL CONTEXT & CITATIONS:
                   </span>
                   <div className="flex flex-wrap gap-3">
@@ -303,18 +303,18 @@ export default function BrainView({ data = mockBrainData }) {
                           key={idx}
                           href={src.link || '#'}
                           onClick={(e) => e.preventDefault()}
-                          className="flex items-center gap-2.5 bg-white hover:border-zinc-400 border border-zinc-300 px-4 py-2.5 rounded-lg text-xs font-bold transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)] cursor-pointer text-zinc-950"
+                          className="flex items-center gap-2.5 bg-white dark:bg-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600 border border-zinc-300 dark:border-zinc-700 px-4 py-2.5 rounded-lg text-xs font-bold transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)] cursor-pointer text-zinc-950 dark:text-white"
                         >
-                          <IconComponent className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                          <IconComponent className="w-4 h-4 text-zinc-950 dark:text-white flex-shrink-0" />
                           <div className="font-outfit">
-                            <span className="font-bold text-zinc-950 mr-1.5 font-fira">
+                            <span className="font-bold text-zinc-950 dark:text-white mr-1.5 font-fira">
                               [{src.type}]
                             </span>
-                            <span className="text-zinc-950 font-bold">
+                            <span className="text-zinc-950 dark:text-white font-bold">
                               {src.reference?.split(':')[0] || src.reference}
                             </span>
                             {src.reference?.includes(':') && (
-                              <span className="hidden md:inline text-zinc-500 ml-1.5 text-xs font-bold">
+                              <span className="hidden md:inline text-zinc-500 dark:text-zinc-400 ml-1.5 text-xs font-bold">
                                 — {src.reference.split(':')[1]}
                               </span>
                             )}
@@ -328,10 +328,10 @@ export default function BrainView({ data = mockBrainData }) {
             </div>
 
             {/* Code Patch Diff Viewer - Floating Card rounded-xl with rounded-lg black terminal cutouts */}
-            <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-zinc-300 gap-2">
-                <h3 className="text-lg font-bold text-zinc-950 tracking-tight flex items-center gap-2.5 font-outfit">
-                  <FileCode className="w-5 h-5 text-zinc-950" />
+            <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-white/10 shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-zinc-300 dark:border-zinc-700 gap-2">
+                <h3 className="text-lg font-bold text-zinc-950 dark:text-white tracking-tight flex items-center gap-2.5 font-outfit">
+                  <FileCode className="w-5 h-5 text-zinc-950 dark:text-white" />
                   <span>Automated Patch Recommendation & Diff Viewer</span>
                 </h3>
                 <span className="text-xs font-tech bg-black text-white font-bold px-3.5 py-1 rounded-md border border-black shadow-sm self-start sm:self-auto">
@@ -342,9 +342,9 @@ export default function BrainView({ data = mockBrainData }) {
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 {/* Original Code */}
                 <div className="rounded-lg overflow-hidden shadow-lg border border-black bg-black">
-                  <div className="bg-white border-b border-zinc-300 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
-                    <span className="text-zinc-950 flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                  <div className="bg-white dark:bg-zinc-800 border-b border-zinc-300 dark:border-zinc-700 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
+                    <span className="text-zinc-950 dark:text-white flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-zinc-950 dark:text-white flex-shrink-0" />
                       <span>Original (Vulnerable)</span>
                     </span>
                     <span className="bg-black text-white px-2.5 py-0.5 rounded-md text-xs font-bold uppercase shadow-sm">
@@ -360,9 +360,9 @@ export default function BrainView({ data = mockBrainData }) {
 
                 {/* Fixed Code */}
                 <div className="rounded-lg overflow-hidden shadow-lg border border-black bg-black">
-                  <div className="bg-white border-b border-zinc-300 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
-                    <span className="text-zinc-950 flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                  <div className="bg-white dark:bg-zinc-800 border-b border-zinc-300 dark:border-zinc-700 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
+                    <span className="text-zinc-950 dark:text-white flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-zinc-950 dark:text-white flex-shrink-0" />
                       <span>Automated Remediation Patch</span>
                     </span>
                     <span className="bg-black text-white px-2.5 py-0.5 rounded-md text-xs font-bold uppercase shadow-sm">
@@ -380,9 +380,9 @@ export default function BrainView({ data = mockBrainData }) {
           </>
         )}
 
-        {/* Card 5: Institutional AI Triage Dialogue (Chat Messages) - Floating Card rounded-xl bg-zinc-100 */}
-        <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
-          <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase font-tech border-b border-zinc-300 pb-3">
+        {/* Card 5: Institutional AI Triage Dialogue (Chat Messages) - Floating Card rounded-xl bg-zinc-100 dark:bg-zinc-900 */}
+        <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
+          <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 tracking-wider uppercase font-tech border-b border-zinc-300 dark:border-zinc-700 pb-3">
             INSTITUTIONAL AI TRIAGE DIALOGUE
           </h3>
           <div className="space-y-4 pt-1">
@@ -392,16 +392,16 @@ export default function BrainView({ data = mockBrainData }) {
                 <div
                   key={index}
                   className={`flex items-start gap-4 p-4.5 rounded-lg shadow-[0_4px_14px_rgba(0,0,0,0.15)] ${isAI
-                      ? 'bg-white border border-zinc-300 text-zinc-950 font-medium'
+                      ? 'bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-950 dark:text-white font-medium'
                       : 'bg-black border border-black text-white font-medium ml-6 sm:ml-12 shadow-[0_6px_18px_rgba(0,0,0,0.25)]'
                     }`}
                 >
-                  <div className={`px-2.5 py-1 rounded-md flex-shrink-0 mt-0.5 font-bold text-xs font-tech border shadow-sm ${isAI ? 'bg-black text-white border-black' : 'bg-zinc-100 text-zinc-950 border-zinc-300'
+                  <div className={`px-2.5 py-1 rounded-md flex-shrink-0 mt-0.5 font-bold text-xs font-tech border shadow-sm ${isAI ? 'bg-black text-white border-black' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-950 dark:text-white border-zinc-300 dark:border-zinc-700'
                     }`}>
                     {isAI ? 'AI' : 'DEV'}
                   </div>
                   <div className="flex-1 leading-relaxed text-base font-outfit">
-                    <span className={`text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 ${isAI ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                    <span className={`text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 ${isAI ? 'text-zinc-500 dark:text-zinc-400' : 'text-zinc-400'}`}>
                       {isAI ? 'Dev Assist Institutional Engine' : 'Lead Developer (You)'}
                     </span>
                     {msg.text}
@@ -412,8 +412,8 @@ export default function BrainView({ data = mockBrainData }) {
           </div>
         </div>
 
-        {/* Card 6: Bottom Interactive Chat Bar - Floating Card rounded-xl bg-zinc-100 with aggressive floating shadow-[0_8px_24px_rgba(0,0,0,0.2)] */}
-        <div className="bg-zinc-100 rounded-xl p-4 px-6 border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.2)] flex-shrink-0">
+        {/* Card 6: Bottom Interactive Chat Bar - Floating Card rounded-xl bg-zinc-100 dark:bg-zinc-900 with aggressive floating shadow-[0_8px_24px_rgba(0,0,0,0.2)] */}
+        <div className="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-4 px-6 border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.2)] flex-shrink-0">
           <form onSubmit={handleSendMessage} className="flex items-center gap-3 w-full">
             <div className="relative flex-1">
               <input
@@ -421,9 +421,9 @@ export default function BrainView({ data = mockBrainData }) {
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Ask follow-up questions to the Institutional Brain (e.g., 'How do we scale pg_pool?')..."
-                className="w-full bg-white border border-zinc-300 focus:border-zinc-500 text-sm font-bold text-zinc-950 rounded-lg px-4 py-3 pl-11 focus:outline-none shadow-[0_4px_14px_rgba(0,0,0,0.15)] transition-colors placeholder:text-zinc-400 font-outfit"
+                className="w-full bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 focus:border-zinc-500 text-sm font-bold text-zinc-950 dark:text-white rounded-lg px-4 py-3 pl-11 focus:outline-none shadow-[0_4px_14px_rgba(0,0,0,0.15)] transition-colors placeholder:text-zinc-400 font-outfit"
               />
-              <MessageSquare className="w-4.5 h-4.5 text-zinc-950 absolute left-4 top-3.5 flex-shrink-0 pointer-events-none" />
+              <MessageSquare className="w-4.5 h-4.5 text-zinc-950 dark:text-white absolute left-4 top-3.5 flex-shrink-0 pointer-events-none" />
             </div>
             <button
               type="submit"
