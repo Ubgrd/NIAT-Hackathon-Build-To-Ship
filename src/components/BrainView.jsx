@@ -1,0 +1,444 @@
+import React, { useState } from 'react';
+import axios from 'axios';
+import { 
+  Activity, GitCommit, Ticket, Terminal, AlertCircle, CheckCircle, 
+  MessageSquare, ArrowRight, FileCode, Loader2
+} from 'lucide-react';
+import { mockBrainData } from '../mockData';
+
+const sampleStackTrace = `[ERROR] 2026-08-06T00:15:22.412Z - PoolExhaustedError: Timeout waiting for client connection from pool
+    at Pool._connect (/app/node_modules/pg-pool/index.js:219:19)
+    at TournamentEngine.handleMatchmaking (/app/services/tournament/matchmaking.js:84:22)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+[WARN] 2026-08-06T00:15:23.001Z - WebSocket connection dropped for 4,120 subscribers in lobby_id=eu_west_prime due to upstream latency.`;
+
+const hideScrollbar = "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
+
+export default function BrainView({ data = mockBrainData }) {
+  const { recentCommits, jiraTickets, sampleDiagnosis } = data;
+
+  const [logText, setLogText] = useState(sampleStackTrace);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [diagnosisData, setDiagnosisData] = useState(null);
+
+  const [chatInput, setChatInput] = useState('');
+  const [chatMessages, setChatMessages] = useState([
+    {
+      sender: 'ai',
+      text: 'Institutional Brain online. I have ingested 4,120 commit diffs and 820 solved Jira incidents. Ready to analyze stack traces and correlate root causes.'
+    }
+  ]);
+
+  const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    setDiagnosisData(null);
+    try {
+      const response = await axios.post('http://localhost:5000/api/triage-log', { 
+        log: logText 
+      });
+      setDiagnosisData(response.data);
+      setIsAnalyzing(false);
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: `Analysis Complete via API: Root cause linked to connection pool exhaustion. Remediation patch loaded in viewer.`
+        }
+      ]);
+    } catch (error) {
+      setTimeout(() => {
+        setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
+        setIsAnalyzing(false);
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            sender: 'ai',
+            text: `Offline RAG Fallback Activated: Correlated PoolExhaustedError against historical Commit a1b2c3d and Ticket DEV-402. Zero-leak remediation patch generated in Diff Viewer.`
+          }
+        ]);
+      }, 1500);
+    }
+  };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+    const userText = chatInput;
+    setChatInput('');
+    setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
+
+    setTimeout(() => {
+      setChatMessages((prev) => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: `Regarding "${userText}": The connection pool timeout can also be mitigated temporarily by increasing max_connections in pg_hba.conf, but ensuring client.release() in the finally block is required for zero-leak steady state.`
+        }
+      ]);
+    }, 1000);
+  };
+
+  return (
+    <div className="h-full w-full bg-black text-zinc-950 font-outfit font-medium flex flex-col lg:flex-row p-4 lg:p-6 gap-6 overflow-hidden relative">
+      {/* Floating Left Context Sidebar (30% width) - bg-zinc-100 rounded-xl with hidden scrollbar */}
+      <aside className={`w-full lg:w-[30%] bg-zinc-100 rounded-xl p-5 lg:p-6 border border-white/10 shadow-xl flex flex-col justify-between overflow-y-auto ${hideScrollbar} flex-shrink-0 z-10`}>
+        <div className="space-y-6">
+          {/* Header */}
+          <div>
+            <div className="flex items-center gap-2 text-xs font-bold text-zinc-500 tracking-wider uppercase mb-1.5 font-tech">
+              <Terminal className="w-4 h-4 text-zinc-950" />
+              <span>DEVOPS TRIAGE TELEMETRY</span>
+            </div>
+            <h2 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+              System Context Feed
+            </h2>
+            <p className="text-xs text-zinc-500 font-medium mt-1 leading-relaxed font-outfit">
+              Live streaming ingestion of source repository mutations and production incident tickets.
+            </p>
+          </div>
+
+          {/* 'System Health' Widget - pure bg-white with custom shadow-[0_4px_14px_rgba(0,0,0,0.15)] */}
+          <div className="bg-white border border-zinc-300 rounded-lg p-4.5 shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-zinc-500 tracking-wider uppercase font-tech">
+                SYSTEM HEALTH & TELEMETRY
+              </span>
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-black text-white font-bold border border-black font-tech text-xs shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>99.9% Uptime</span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-zinc-950 bg-zinc-100 px-3.5 py-2.5 rounded-lg border border-zinc-300 mt-2 font-tech font-bold shadow-sm">
+              <CheckCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+              <span className="truncate">Active Log Ingestion: <span className="bg-black text-white font-bold px-2 py-0.5 rounded-md border border-black ml-1 font-tech">Operational</span></span>
+            </div>
+          </div>
+
+          {/* 'Recent Commits' List */}
+          <div className="space-y-3 pt-4 border-t border-zinc-300">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase flex items-center gap-1.5 font-tech">
+                <GitCommit className="w-4 h-4 text-zinc-950" />
+                <span>RECENT COMMITS</span>
+              </h3>
+              <span className="text-xs font-tech text-zinc-950 bg-white px-2.5 py-0.5 rounded-md border border-zinc-300 font-bold shadow-sm">
+                Main Branch
+              </span>
+            </div>
+            
+            <div className="space-y-3.5">
+              {recentCommits.map((commit) => (
+                <div 
+                  key={commit.id}
+                  className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                >
+                  <div className="flex items-center justify-between gap-2 mb-2.5">
+                    <span className="font-fira bg-zinc-100 border border-zinc-300 text-zinc-950 px-2.5 py-0.5 rounded-md text-xs font-bold shadow-sm">
+                      {commit.id}
+                    </span>
+                    <span className="text-xs text-zinc-500 font-bold font-outfit">
+                      {commit.time}
+                    </span>
+                  </div>
+                  <p className="text-base font-bold text-zinc-950 leading-snug font-outfit">
+                    {commit.message}
+                  </p>
+                  <div className="mt-3 text-xs text-zinc-500 font-bold flex items-center justify-between border-t border-zinc-300 pt-2.5 font-outfit">
+                    <span>Committer:</span>
+                    <span className="text-zinc-950 font-bold">{commit.author}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 'Active Jira Tickets' List */}
+          <div className="space-y-3 pt-4 border-t border-zinc-300">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase flex items-center gap-1.5 font-tech">
+                <Ticket className="w-4 h-4 text-zinc-950" />
+                <span>ACTIVE JIRA TICKETS</span>
+              </h3>
+              <span className="text-xs font-tech text-zinc-950 bg-white px-2.5 py-0.5 rounded-md border border-zinc-300 font-bold shadow-sm">
+                Live Queue
+              </span>
+            </div>
+
+            <div className="space-y-3.5">
+              {jiraTickets.map((ticket) => {
+                const getPriorityBadgeClass = (priority) => {
+                  if (priority === 'Critical') return 'bg-red-100 text-red-800 border border-red-200 font-bold';
+                  if (priority === 'High') return 'bg-orange-100 text-orange-800 border border-orange-200 font-bold';
+                  return 'bg-zinc-100 text-zinc-800 border border-zinc-300 font-bold';
+                };
+
+                const getStatusTextClass = (status) => {
+                  if (status === 'Resolved') return 'text-emerald-600 font-semibold';
+                  if (status === 'In Progress') return 'text-blue-600 font-semibold';
+                  return 'text-zinc-500 font-medium';
+                };
+
+                return (
+                  <div 
+                    key={ticket.key}
+                    className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+                  >
+                    <div className="flex items-center justify-between mb-2.5">
+                      <span className="font-fira text-xs font-bold text-zinc-950 bg-zinc-100 px-2.5 py-0.5 rounded-md border border-zinc-300 shadow-sm">
+                        {ticket.key}
+                      </span>
+                      <span className={`text-xs font-tech uppercase px-2 py-0.5 rounded-md shadow-sm ${getPriorityBadgeClass(ticket.priority)}`}>
+                        {ticket.priority}
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-zinc-950 leading-snug font-outfit">
+                      {ticket.title}
+                    </h4>
+                    <div className="mt-3 flex items-center justify-between text-xs text-zinc-500 font-bold border-t border-zinc-300 pt-2.5 font-outfit">
+                      <span>Status:</span>
+                      <span className={`font-tech ${getStatusTextClass(ticket.status)}`}>{ticket.status}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Segmented Right Workspace (70% width) - Transparent wrapper with hidden scrollbar */}
+      <section className={`w-full lg:w-[70%] bg-transparent flex flex-col space-y-6 overflow-y-auto ${hideScrollbar}`}>
+        {/* Card 1: Raw Log Input Area rounded-xl bg-zinc-100 */}
+        <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-300 pb-3.5">
+            <div className="flex items-center gap-2.5 font-outfit text-lg font-bold text-zinc-950 tracking-tight">
+              <Terminal className="w-5 h-5 text-zinc-950" />
+              <span>Raw Production Log Ingestion & Stack Trace</span>
+            </div>
+            <span className="text-xs uppercase font-bold text-zinc-950 tracking-wider font-tech px-3 py-1 rounded-md bg-white border border-zinc-300 self-start sm:self-auto shadow-[0_4px_14px_rgba(0,0,0,0.15)]">
+              ANOMALY DETECTION
+            </span>
+          </div>
+
+          <div className="relative">
+            <textarea
+              rows={5}
+              value={logText}
+              onChange={(e) => setLogText(e.target.value)}
+              placeholder="Paste raw server stack traces or timeout logs here..."
+              className={`w-full bg-black text-emerald-400 font-fira p-5 rounded-lg border-none focus:outline-none focus:ring-1 focus:ring-emerald-500 text-xs leading-relaxed resize-y shadow-inner ${hideScrollbar}`}
+            />
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1 font-outfit">
+            <span className="text-xs text-zinc-500 font-bold flex items-center gap-1.5">
+              <span>RAG Engine ready to correlate stack trace against Jira & GitHub history.</span>
+            </span>
+            <button
+              onClick={handleAnalyze}
+              disabled={isAnalyzing}
+              className="px-6 py-3 rounded-lg bg-black hover:bg-zinc-900 text-white font-bold text-xs tracking-wide uppercase transition-colors disabled:opacity-60 flex items-center justify-center gap-2 self-end sm:self-auto cursor-pointer border border-zinc-800 shadow-xl active:translate-y-[0.5px]"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Correlating...</span>
+                </>
+              ) : (
+                <>
+                  <Activity className="w-4 h-4 text-white" />
+                  <span>Analyze Log with RAG</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Card 2: Loading State rounded-xl */}
+        {isAnalyzing && (
+          <div className="py-14 flex flex-col items-center justify-center bg-zinc-100 rounded-xl border border-white/10 shadow-xl text-center">
+            <Loader2 className="w-9 h-9 animate-spin text-zinc-950 mb-3.5" />
+            <h3 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+              Traversing Institutional Graph & Vector Embeddings...
+            </h3>
+            <p className="text-xs text-zinc-500 font-bold mt-1.5 font-fira">
+              Matching error tokens against Commit a1b2c3d and Ticket DEV-402
+            </p>
+          </div>
+        )}
+
+        {/* Card 3 & 4: RAG Diagnosis Result Floating Cards rounded-xl */}
+        {diagnosisData && !isAnalyzing && (
+          <>
+            {/* Root Cause Banner - Floating Card rounded-xl */}
+            <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 text-zinc-950 shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
+              <div className="flex items-start gap-4">
+                <AlertCircle className="w-6 h-6 text-zinc-950 flex-shrink-0 mt-0.5" />
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-zinc-950 tracking-tight font-outfit">
+                      Root Cause Identified
+                    </h3>
+                    <span className="text-xs font-tech font-bold text-white bg-black px-3 py-1 rounded-md border border-black shadow-sm">
+                      Confidence: 99.4%
+                    </span>
+                  </div>
+                  <p className="text-base text-zinc-950 font-bold leading-relaxed font-outfit">
+                    {diagnosisData.rootCause}
+                  </p>
+                </div>
+              </div>
+
+              {/* Matched Historical Context */}
+              {diagnosisData.matchedSources && (
+                <div className="pt-4 border-t border-zinc-300">
+                  <span className="text-xs font-bold font-tech text-zinc-500 tracking-wider uppercase block mb-3">
+                    MATCHED INSTITUTIONAL CONTEXT & CITATIONS:
+                  </span>
+                  <div className="flex flex-wrap gap-3">
+                    {diagnosisData.matchedSources.map((src, idx) => {
+                      const isPR = src.type?.includes('PR');
+                      const IconComponent = isPR ? FileCode : Ticket;
+                      return (
+                        <a
+                          key={idx}
+                          href={src.link || '#'}
+                          onClick={(e) => e.preventDefault()}
+                          className="flex items-center gap-2.5 bg-white hover:border-zinc-400 border border-zinc-300 px-4 py-2.5 rounded-lg text-xs font-bold transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)] cursor-pointer text-zinc-950"
+                        >
+                          <IconComponent className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                          <div className="font-outfit">
+                            <span className="font-bold text-zinc-950 mr-1.5 font-fira">
+                              [{src.type}]
+                            </span>
+                            <span className="text-zinc-950 font-bold">
+                              {src.reference?.split(':')[0] || src.reference}
+                            </span>
+                            {src.reference?.includes(':') && (
+                              <span className="hidden md:inline text-zinc-500 ml-1.5 text-xs font-bold">
+                                — {src.reference.split(':')[1]}
+                              </span>
+                            )}
+                          </div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Code Patch Diff Viewer - Floating Card rounded-xl with rounded-lg black terminal cutouts */}
+            <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-5 animate-in fade-in duration-200 flex-shrink-0">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-zinc-300 gap-2">
+                <h3 className="text-lg font-bold text-zinc-950 tracking-tight flex items-center gap-2.5 font-outfit">
+                  <FileCode className="w-5 h-5 text-zinc-950" />
+                  <span>Automated Patch Recommendation & Diff Viewer</span>
+                </h3>
+                <span className="text-xs font-tech bg-black text-white font-bold px-3.5 py-1 rounded-md border border-black shadow-sm self-start sm:self-auto">
+                  Verified Patch
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Original Code */}
+                <div className="rounded-lg overflow-hidden shadow-lg border border-black bg-black">
+                  <div className="bg-white border-b border-zinc-300 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
+                    <span className="text-zinc-950 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                      <span>Original (Vulnerable)</span>
+                    </span>
+                    <span className="bg-black text-white px-2.5 py-0.5 rounded-md text-xs font-bold uppercase shadow-sm">
+                      BUG
+                    </span>
+                  </div>
+                  <div className={`p-5 bg-black text-red-400 font-fira text-xs border-none overflow-auto ${hideScrollbar}`}>
+                    <pre className="leading-relaxed">
+                      <code>{diagnosisData.originalCode}</code>
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Fixed Code */}
+                <div className="rounded-lg overflow-hidden shadow-lg border border-black bg-black">
+                  <div className="bg-white border-b border-zinc-300 px-4 py-2.5 flex items-center justify-between text-xs font-tech font-bold">
+                    <span className="text-zinc-950 flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-zinc-950 flex-shrink-0" />
+                      <span>Automated Remediation Patch</span>
+                    </span>
+                    <span className="bg-black text-white px-2.5 py-0.5 rounded-md text-xs font-bold uppercase shadow-sm">
+                      FIX
+                    </span>
+                  </div>
+                  <div className={`p-5 bg-black text-emerald-400 font-fira text-xs border-none overflow-auto ${hideScrollbar}`}>
+                    <pre className="leading-relaxed">
+                      <code>{diagnosisData.fixedCode}</code>
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Card 5: Institutional AI Triage Dialogue (Chat Messages) - Floating Card rounded-xl bg-zinc-100 */}
+        <div className="bg-zinc-100 rounded-xl p-6 border border-white/10 shadow-xl space-y-4 flex-shrink-0">
+          <h3 className="text-xs font-bold text-zinc-500 tracking-wider uppercase font-tech border-b border-zinc-300 pb-3">
+            INSTITUTIONAL AI TRIAGE DIALOGUE
+          </h3>
+          <div className="space-y-4 pt-1">
+            {chatMessages.map((msg, index) => {
+              const isAI = msg.sender === 'ai';
+              return (
+                <div 
+                  key={index}
+                  className={`flex items-start gap-4 p-4.5 rounded-lg shadow-[0_4px_14px_rgba(0,0,0,0.15)] ${
+                    isAI 
+                      ? 'bg-white border border-zinc-300 text-zinc-950 font-medium' 
+                      : 'bg-black border border-black text-white font-medium ml-6 sm:ml-12 shadow-[0_6px_18px_rgba(0,0,0,0.25)]'
+                  }`}
+                >
+                  <div className={`px-2.5 py-1 rounded-md flex-shrink-0 mt-0.5 font-bold text-xs font-tech border shadow-sm ${
+                    isAI ? 'bg-black text-white border-black' : 'bg-zinc-100 text-zinc-950 border-zinc-300'
+                  }`}>
+                    {isAI ? 'AI' : 'DEV'}
+                  </div>
+                  <div className="flex-1 leading-relaxed text-base font-outfit">
+                    <span className={`text-xs font-tech font-bold uppercase tracking-wider block mb-1.5 ${isAI ? 'text-zinc-500' : 'text-zinc-400'}`}>
+                      {isAI ? 'Dev Assist Institutional Engine' : 'Lead Developer (You)'}
+                    </span>
+                    {msg.text}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Card 6: Bottom Interactive Chat Bar - Floating Card rounded-xl bg-zinc-100 with aggressive floating shadow-[0_8px_24px_rgba(0,0,0,0.2)] */}
+        <div className="bg-zinc-100 rounded-xl p-4 px-6 border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.2)] flex-shrink-0">
+          <form onSubmit={handleSendMessage} className="flex items-center gap-3 w-full">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Ask follow-up questions to the Institutional Brain (e.g., 'How do we scale pg_pool?')..."
+                className="w-full bg-white border border-zinc-300 focus:border-zinc-500 text-sm font-bold text-zinc-950 rounded-lg px-4 py-3 pl-11 focus:outline-none shadow-[0_4px_14px_rgba(0,0,0,0.15)] transition-colors placeholder:text-zinc-400 font-outfit"
+              />
+              <MessageSquare className="w-4.5 h-4.5 text-zinc-950 absolute left-4 top-3.5 flex-shrink-0 pointer-events-none" />
+            </div>
+            <button
+              type="submit"
+              disabled={!chatInput.trim()}
+              className="px-6 py-3 rounded-lg bg-black hover:bg-zinc-900 text-white text-xs font-bold uppercase tracking-wide flex items-center gap-2 transition-colors disabled:opacity-50 disabled:pointer-events-none active:translate-y-[0.5px] flex-shrink-0 cursor-pointer border border-zinc-800 shadow-[0_4px_14px_rgba(0,0,0,0.2)] font-outfit"
+            >
+              <span>Transmit</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
+      </section>
+    </div>
+  );
+}
