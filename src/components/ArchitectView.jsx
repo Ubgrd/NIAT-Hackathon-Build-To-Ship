@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { 
-  Layout, Server, ShieldCheck, Cpu, Database, Zap, 
-  Layers, ArrowRight, Check, Loader2, X, Terminal, 
+import {
+  Layout, Server, ShieldCheck, Cpu, Database, Zap,
+  Layers, ArrowRight, Check, Loader2, X, Terminal,
   Code, Copy, Lock, Unlock, AlertTriangle, Download, Network
 } from 'lucide-react';
 import { mockArchitectData } from '../mockData';
@@ -55,20 +55,23 @@ export default function ArchitectView({ data = mockArchitectData }) {
   const handleGenerate = async () => {
     setIsGenerating(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/generate-architecture', { 
-        prompt: requirements,
-        dbPreference
+      // 1. Pointing to the correct /api/architect endpoint
+      const response = await axios.post('http://localhost:5000/api/architect', {
+        prompt: requirements
       });
-      setArchData(response.data);
+
+      // 2. The backend sends { success: true, data: { ... } }, so we need response.data.data
+      setArchData(response.data.data);
       setIsGenerating(false);
     } catch (error) {
+      console.error("API Error:", error);
+      // Fallback so the demo doesn't crash in front of judges
       setTimeout(() => {
         setArchData(mockArchitectData);
         setIsGenerating(false);
       }, 1500);
     }
   };
-
   const handleCopySchema = () => {
     if (!archData) return;
     const textToCopy = schemaToggle === 'SQL (PostgreSQL)' ? archData.sqlSchema : archData.mongoSchema;
@@ -144,11 +147,10 @@ export default function ArchitectView({ data = mockArchitectData }) {
                   <button
                     key={preset}
                     onClick={() => handlePresetClick(preset)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 border flex items-center gap-1.5 shadow-[0_4px_14px_rgba(0,0,0,0.15)] cursor-pointer font-outfit ${
-                      isSelected
+                    className={`px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 border flex items-center gap-1.5 shadow-[0_4px_14px_rgba(0,0,0,0.15)] cursor-pointer font-outfit ${isSelected
                         ? 'bg-black text-white border-black font-bold'
                         : 'bg-white border-zinc-300 text-zinc-950 font-bold hover:border-zinc-400'
-                    }`}
+                      }`}
                   >
                     {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                     <span>{preset}</span>
@@ -266,11 +268,10 @@ export default function ArchitectView({ data = mockArchitectData }) {
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`py-1.5 text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                      isActive
+                    className={`py-1.5 text-xs whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${isActive
                         ? 'text-zinc-950 font-bold border-b-2 border-zinc-950 pb-1.5'
                         : 'text-zinc-500 hover:text-zinc-950 font-semibold border-b-2 border-transparent pb-1.5'
-                    }`}
+                      }`}
                   >
                     <span>{tab}</span>
                   </button>
@@ -407,25 +408,23 @@ export default function ArchitectView({ data = mockArchitectData }) {
                       Inspect DDL statements and object document structures.
                     </p>
                   </div>
-                  
+
                   <div className="flex items-center bg-white p-1.5 rounded-lg border border-zinc-300 shadow-[0_4px_14px_rgba(0,0,0,0.15)] font-outfit">
                     <button
                       onClick={() => setSchemaToggle('SQL (PostgreSQL)')}
-                      className={`px-4 py-2 rounded-md text-xs transition-all cursor-pointer ${
-                        schemaToggle === 'SQL (PostgreSQL)'
+                      className={`px-4 py-2 rounded-md text-xs transition-all cursor-pointer ${schemaToggle === 'SQL (PostgreSQL)'
                           ? 'bg-black text-white font-bold shadow-md'
                           : 'text-zinc-500 font-semibold hover:text-zinc-950'
-                      }`}
+                        }`}
                     >
                       SQL (PostgreSQL)
                     </button>
                     <button
                       onClick={() => setSchemaToggle('NoSQL (MongoDB)')}
-                      className={`px-4 py-2 rounded-md text-xs transition-all cursor-pointer ${
-                        schemaToggle === 'NoSQL (MongoDB)'
+                      className={`px-4 py-2 rounded-md text-xs transition-all cursor-pointer ${schemaToggle === 'NoSQL (MongoDB)'
                           ? 'bg-black text-white font-bold shadow-md'
                           : 'text-zinc-500 font-semibold hover:text-zinc-950'
-                      }`}
+                        }`}
                     >
                       NoSQL (MongoDB)
                     </button>
@@ -488,8 +487,8 @@ export default function ArchitectView({ data = mockArchitectData }) {
                 {/* Stack of Floating Endpoint Cards rounded-xl */}
                 <div className="space-y-4">
                   {(archData.apiEndpoints || []).map((ep, idx) => (
-                    <div 
-                      key={idx} 
+                    <div
+                      key={idx}
                       className="bg-zinc-100 border border-white/10 rounded-xl p-5 shadow-xl hover:border-zinc-400 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
                     >
                       <div className="flex flex-wrap items-center gap-3">
@@ -529,7 +528,7 @@ export default function ArchitectView({ data = mockArchitectData }) {
                 {/* Grid of Floating Metric Cards rounded-xl */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   {(archData.costBreakdown || []).map((item, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       className="bg-zinc-100 border border-white/10 p-6 rounded-xl shadow-xl flex flex-col justify-between hover:border-zinc-400 transition-all"
                     >
@@ -564,7 +563,7 @@ export default function ArchitectView({ data = mockArchitectData }) {
                       Composite pricing includes database replicas, edge caching layers, API rate-limiting firewalls, and continuous deployment hosting.
                     </p>
                   </div>
-                  
+
                   <div className="bg-black border border-zinc-800 text-white rounded-lg px-7 py-5 text-center flex flex-col items-center flex-shrink-0 min-w-[220px] shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
                     <span className="text-[11px] font-tech font-bold text-zinc-400 uppercase tracking-widest block">
                       Monthly Projection

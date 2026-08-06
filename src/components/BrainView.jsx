@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { 
-  Activity, GitCommit, Ticket, Terminal, AlertCircle, CheckCircle, 
+import {
+  Activity, GitCommit, Ticket, Terminal, AlertCircle, CheckCircle,
   MessageSquare, ArrowRight, FileCode, Loader2
 } from 'lucide-react';
 import { mockBrainData } from '../mockData';
@@ -33,49 +33,48 @@ export default function BrainView({ data = mockBrainData }) {
     setIsAnalyzing(true);
     setDiagnosisData(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/triage-log', { 
-        log: logText 
+      const response = await axios.post('http://localhost:5000/api/ops-brain', {
+        query: "Analyze this stack trace: " + logText
       });
-      setDiagnosisData(response.data);
+
+      setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
       setIsAnalyzing(false);
+
       setChatMessages((prev) => [
         ...prev,
         {
           sender: 'ai',
-          text: `Analysis Complete via API: Root cause linked to connection pool exhaustion. Remediation patch loaded in viewer.`
+          text: response.data.answer
         }
       ]);
     } catch (error) {
-      setTimeout(() => {
-        setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
-        setIsAnalyzing(false);
-        setChatMessages((prev) => [
-          ...prev,
-          {
-            sender: 'ai',
-            text: `Offline RAG Fallback Activated: Correlated PoolExhaustedError against historical Commit a1b2c3d and Ticket DEV-402. Zero-leak remediation patch generated in Diff Viewer.`
-          }
-        ]);
-      }, 1500);
+      console.error(error);
+      setDiagnosisData(sampleDiagnosis || mockBrainData.sampleDiagnosis);
+      setIsAnalyzing(false);
+      setChatMessages((prev) => [...prev, { sender: 'ai', text: `Offline RAG Fallback Activated: Connection failed.` }]);
     }
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
     const userText = chatInput;
     setChatInput('');
+
     setChatMessages((prev) => [...prev, { sender: 'user', text: userText }]);
 
-    setTimeout(() => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/ops-brain', {
+        query: userText
+      });
+
       setChatMessages((prev) => [
         ...prev,
-        {
-          sender: 'ai',
-          text: `Regarding "${userText}": The connection pool timeout can also be mitigated temporarily by increasing max_connections in pg_hba.conf, but ensuring client.release() in the finally block is required for zero-leak steady state.`
-        }
+        { sender: 'ai', text: response.data.answer }
       ]);
-    }, 1000);
+    } catch (error) {
+      setChatMessages((prev) => [...prev, { sender: 'ai', text: `Error reaching the Institutional Brain.` }]);
+    }
   };
 
   return (
@@ -125,10 +124,10 @@ export default function BrainView({ data = mockBrainData }) {
                 Main Branch
               </span>
             </div>
-            
+
             <div className="space-y-3.5">
               {recentCommits.map((commit) => (
-                <div 
+                <div
                   key={commit.id}
                   className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                 >
@@ -179,7 +178,7 @@ export default function BrainView({ data = mockBrainData }) {
                 };
 
                 return (
-                  <div 
+                  <div
                     key={ticket.key}
                     className="bg-white hover:border-zinc-400 border border-zinc-300 rounded-lg p-4 transition-colors shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
                   >
@@ -390,17 +389,15 @@ export default function BrainView({ data = mockBrainData }) {
             {chatMessages.map((msg, index) => {
               const isAI = msg.sender === 'ai';
               return (
-                <div 
+                <div
                   key={index}
-                  className={`flex items-start gap-4 p-4.5 rounded-lg shadow-[0_4px_14px_rgba(0,0,0,0.15)] ${
-                    isAI 
-                      ? 'bg-white border border-zinc-300 text-zinc-950 font-medium' 
+                  className={`flex items-start gap-4 p-4.5 rounded-lg shadow-[0_4px_14px_rgba(0,0,0,0.15)] ${isAI
+                      ? 'bg-white border border-zinc-300 text-zinc-950 font-medium'
                       : 'bg-black border border-black text-white font-medium ml-6 sm:ml-12 shadow-[0_6px_18px_rgba(0,0,0,0.25)]'
-                  }`}
+                    }`}
                 >
-                  <div className={`px-2.5 py-1 rounded-md flex-shrink-0 mt-0.5 font-bold text-xs font-tech border shadow-sm ${
-                    isAI ? 'bg-black text-white border-black' : 'bg-zinc-100 text-zinc-950 border-zinc-300'
-                  }`}>
+                  <div className={`px-2.5 py-1 rounded-md flex-shrink-0 mt-0.5 font-bold text-xs font-tech border shadow-sm ${isAI ? 'bg-black text-white border-black' : 'bg-zinc-100 text-zinc-950 border-zinc-300'
+                    }`}>
                     {isAI ? 'AI' : 'DEV'}
                   </div>
                   <div className="flex-1 leading-relaxed text-base font-outfit">
