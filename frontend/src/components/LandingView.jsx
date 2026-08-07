@@ -252,11 +252,10 @@ export default function LandingView() {
               {/* Primary Sign In Button */}
               <button
                 type="submit"
-                onClick={handleSubmit}
                 className="w-full py-3.5 px-4 rounded-lg bg-black hover:bg-zinc-900 text-white font-bold font-outfit text-xs tracking-wide uppercase transition-all border border-zinc-800 shadow-[0_4px_14px_rgba(0,0,0,0.2)] active:translate-y-[0.5px] flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Lock className="w-4 h-4 text-white flex-shrink-0" />
-                <span>Sign In</span>
+                <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
                 <ArrowRight className="w-4 h-4 text-white ml-0.5" />
               </button>
             </div>
