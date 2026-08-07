@@ -17,7 +17,14 @@
       }
     },
     {
-      "source": "/(.*)",
+      "source": "/auth(/.*)?",
+      "destination": {
+        "type": "service",
+        "service": "backend"
+      }
+    },
+    {
+      "source": "/((?!api|auth).*)/?",
       "destination": {
         "type": "service",
         "service": "frontend"
