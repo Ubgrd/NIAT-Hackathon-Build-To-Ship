@@ -5,7 +5,6 @@ import { mockArchitectData, mockBrainData } from './mockData';
 import ArchitectView from './components/ArchitectView';
 import BrainView from './components/BrainView';
 import LoginPage from './pages/LoginPage';
-import AuthSuccess from './pages/AuthSuccess';
 import HistoryPage from './pages/HistoryPage';
 import SavedArchitecturesPage from './pages/SavedArchitecturesPage';
 import PrivateRoute from './components/PrivateRoute';
@@ -168,7 +167,6 @@ export default function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/auth/success" element={<AuthSuccess />} />
 
           <Route
             path="/dashboard"
